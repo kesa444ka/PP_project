@@ -1,4 +1,9 @@
 import java.util.*;
+import java.util.regex.*;
+
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
 
 public class Processor {
 
@@ -7,11 +12,20 @@ public class Processor {
         String[] expressions = input.split("\\R");
 
         for (String expression : expressions) {
+            int res;
             try{
                 switch (choice) {
                     case 1:
                         String postfix = InfixToPostfix(expression.trim());
-                        int res = calculate(postfix);
+                        res = calculate(postfix);
+                        result.append((res)).append("\n");
+                        break;
+                    case 2:
+                        res = calculateWithRegex(expression.trim());
+                        result.append((res)).append("\n");
+                        break;
+                    case 3:
+                        res = calculateLibrary(expression.trim());
                         result.append((res)).append("\n");
                         break;
                     default:
@@ -121,7 +135,7 @@ public class Processor {
             case '-' -> a - b;
             case '*' -> a * b;
             case '/' -> a / b;
-            default -> 0;
+            default -> throw new IllegalArgumentException("Неподдерживаемый оператор: " + op);
         };
     }
 
@@ -137,4 +151,49 @@ public class Processor {
         };
     }
 
+
+    protected static int calculateWithRegex(String expression) {
+        expression = expression.replaceAll("\\s+", "");
+        return evaluate(expression);
+    }
+
+    private static int evaluate(String expression) {
+        Pattern bracketPattern = Pattern.compile("\\(([^()]+)\\)");
+        Matcher matcher = bracketPattern.matcher(expression);
+
+        while (matcher.find()) {
+            String subExpr = matcher.group(1);
+            int subResult = evaluate(subExpr);
+            expression = expression.replace("(" + subExpr + ")", String.valueOf(subResult));
+            matcher = bracketPattern.matcher(expression);
+        }
+
+        expression = processOperators(expression, "[*/]");
+        expression = processOperators(expression, "[+-]");
+
+        return Integer.parseInt(expression);
+    }
+
+    private static String processOperators(String expression, String operatorPattern) {
+        Pattern pattern = Pattern.compile("(-?\\d+)([" + operatorPattern + "])(-?\\d+)");
+        Matcher matcher = pattern.matcher(expression);
+
+        while (matcher.find()) {
+            int left = Integer.parseInt(matcher.group(1));
+            String operator = matcher.group(2);
+            int right = Integer.parseInt(matcher.group(3));
+
+            int result = handleOperation(operator.charAt(0), left, right);
+
+            expression = matcher.replaceFirst(String.valueOf(result));
+            matcher = pattern.matcher(expression);
+        }
+        return expression;
+    }
+
+    protected static int calculateLibrary(String expression) {
+        Expression exp = new ExpressionBuilder(expression).build();
+        double result = exp.evaluate();
+        return (int) result;
+    }
 }
