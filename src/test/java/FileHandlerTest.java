@@ -3,37 +3,58 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
 import java.nio.file.*;
 
+import org.jdom2.JDOMException;
+
 public class FileHandlerTest {
 
     private static final String TEST_DIRECTORY = "test_files";
     private static final String TEST_INPUTFILE_TXT = TEST_DIRECTORY + "/test.txt";
+    private static final String TEST_INPUTFILE_XML = TEST_DIRECTORY + "/test.xml";
     private static final String TEST_OUTPUTFILE_TXT = TEST_DIRECTORY + "/test_output.txt";
+    private static final String TEST_OUTPUTFILE_XML = TEST_DIRECTORY + "/test_output.xml";
     private static final String UNSUPPORTED_FILE = TEST_DIRECTORY + "/unsupported.csv";
 
     @BeforeAll
     static void setup() throws IOException {
-        // Создаём временную папку для тестовых файлов
         Files.createDirectories(Paths.get(TEST_DIRECTORY));
-        // Создаём тестовый txt файл
-        Files.writeString(Paths.get(TEST_INPUTFILE_TXT), "Hello, world!");
-        // Создаём файл с неподдерживаемым форматом
+        Files.writeString(Paths.get(TEST_INPUTFILE_TXT), "2 + 3\n7 - 4");
         Files.writeString(Paths.get(UNSUPPORTED_FILE), "{\"key\": \"value\"}");
+
+        String xmlContent = """
+            <mathExamples>
+                <example>
+                    <expression>2 + 3</expression>
+                </example>
+                <example>
+                    <expression>7 - 4</expression>
+                </example>
+            </mathExamples>
+            """;
+        Files.writeString(Paths.get(TEST_INPUTFILE_XML), xmlContent);
     }
 
     @AfterAll
     static void cleanup() throws IOException {
         // Удаляем все тестовые файлы и директории
         Files.deleteIfExists(Paths.get(TEST_INPUTFILE_TXT));
+        Files.deleteIfExists(Paths.get(TEST_INPUTFILE_XML));
         Files.deleteIfExists(Paths.get(TEST_OUTPUTFILE_TXT));
+        Files.deleteIfExists(Paths.get(TEST_OUTPUTFILE_XML));
         Files.deleteIfExists(Paths.get(UNSUPPORTED_FILE));
         Files.deleteIfExists(Paths.get(TEST_DIRECTORY));
     }
 
     @Test
-    void ReadTxtFile() throws IOException {
-        String expected = "Hello, world!";
+    void ReadTxtFile() throws IOException, JDOMException {
+        String expected = "2 + 3\n7 - 4";
         String actual = FileHandler.readFile(TEST_INPUTFILE_TXT, "txt");
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void ReadXmlFile() throws IOException, JDOMException {
+        String content = FileHandler.readFile(TEST_INPUTFILE_XML, "xml");
+        assertEquals("2 + 3\n7 - 4", content);
     }
 
     @Test
@@ -67,8 +88,19 @@ public class FileHandlerTest {
     }
 
     @Test
+    void testWriteXmlFile() throws IOException {
+        String data = "5\n3";
+        FileHandler.writeFile(TEST_OUTPUTFILE_XML, data, "xml");
+
+        assertTrue(Files.exists(Path.of(TEST_OUTPUTFILE_XML)));
+
+        String writtenContent = Files.readString(Path.of(TEST_OUTPUTFILE_XML));
+        assertTrue(writtenContent.contains("<result>5</result>"));
+        assertTrue(writtenContent.contains("<result>3</result>"));
+    }
+
+    @Test
     void WriteUnsupportedFileType() {
-        // Проверяем, что неподдерживаемый тип вызывает исключение
         IllegalArgumentException e = assertThrows(
                 IllegalArgumentException.class,
                 () -> FileHandler.writeFile(TEST_OUTPUTFILE_TXT, "Dummy data", "unsupported"),

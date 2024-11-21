@@ -1,0 +1,26 @@
+<mathExamples>
+    <example>
+        <expression>2 + 3</expression>
+    </example>
+    <example>
+        <expression>7 - 4</expression>
+    </example>
+    <example>
+        <expression>5 * 6</expression>
+    </example>
+    <example>
+        <expression>20 / 10 - (5 + 5)</expression>
+    </example>
+    <example>
+        <expression>9 + 1</expression>
+    </example>
+    <example>
+        <expression>15 - 5</expression>
+    </example>
+    <example>
+        <expression>8 * 7</expression>
+    </example>
+    <example>
+        <expression>36 /6+  2*(4-(5-4))</expression>
+    </example>
+</mathExamples>
