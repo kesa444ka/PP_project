@@ -14,18 +14,13 @@ import org.yaml.snakeyaml.*;
 public class FileHandler {
 
     public static String readFile(String fileName, String type) throws IOException, JDOMException {
-        switch (type) {
-            case "txt":
-                return Files.readString(Paths.get(fileName));
-            case "xml":
-                return parseXML(fileName);
-            case "json":
-                return parseJSON(fileName);
-            case "yaml":
-                return parseYAML(fileName);
-            default:
-                throw new IllegalArgumentException("Неподдерживаемый тип файла: " + type);
-        }
+        return switch (type) {
+            case "txt" -> Files.readString(Paths.get(fileName));
+            case "xml" -> parseXML(fileName);
+            case "json" -> parseJSON(fileName);
+            case "yaml" -> parseYAML(fileName);
+            default -> throw new IllegalArgumentException("Неподдерживаемый тип файла: " + type);
+        };
     }
 
     public static void writeFile(String path, String data, String type) throws IOException {
