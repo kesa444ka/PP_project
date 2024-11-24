@@ -6,6 +6,9 @@ import org.jdom2.input.*;
 import org.jdom2.*;
 import org.jdom2.output.*;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.node.*;
+
 public class FileHandler {
 
     // Чтение данных из файла
@@ -16,6 +19,8 @@ public class FileHandler {
                 return content;
             case "xml":
                 return parseXML(fileName);
+            case "json":
+                return parseJSON(fileName);
             default:
                 throw new IllegalArgumentException("Неподдерживаемый тип файла: " + type);
         }
@@ -29,6 +34,9 @@ public class FileHandler {
                 break;
             case "xml":
                 writeXML(path, data);
+                break;
+            case "json":
+                writeJSON(path, data);
                 break;
             default:
                 throw new IllegalArgumentException("Неподдерживаемый тип файла: " + type);
@@ -65,5 +73,35 @@ public class FileHandler {
         try(FileWriter fw=new FileWriter(path)){
             outputter.output(doc,fw);
         }
+    }
+
+    private static String parseJSON(String filename) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode root = objectMapper.readTree(new File(filename));
+
+        StringBuilder result = new StringBuilder();
+        JsonNode examples = root.get("mathExamples");
+        if(examples!=null && examples.isArray()){
+            for(JsonNode node: examples){
+                result.append(node.get("expression").asText().trim()).append("\n");            }
+        }
+
+        return result.toString().trim();
+    }
+
+    private static void writeJSON(String path, String data) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode root = objectMapper.createObjectNode();
+
+        ArrayNode arr = objectMapper.createArrayNode();
+        String[] results = data.split("\n");
+        for(String result: results){
+            ObjectNode obj = objectMapper.createObjectNode();
+            obj.put("result", result);
+            arr.add(obj);
+        }
+
+        root.set("results", arr);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(path), root);
     }
 }
