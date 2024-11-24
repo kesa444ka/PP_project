@@ -11,9 +11,11 @@ public class FileHandlerTest {
     private static final String TEST_INPUTFILE_TXT = TEST_DIRECTORY + "/test.txt";
     private static final String TEST_INPUTFILE_XML = TEST_DIRECTORY + "/test.xml";
     private static final String TEST_INPUTFILE_JSON = TEST_DIRECTORY + "/test.json";
+    private static final String TEST_INPUTFILE_YAML = TEST_DIRECTORY + "/test.yaml";
     private static final String TEST_OUTPUTFILE_TXT = TEST_DIRECTORY + "/test_output.txt";
     private static final String TEST_OUTPUTFILE_XML = TEST_DIRECTORY + "/test_output.xml";
     private static final String TEST_OUTPUTFILE_JSON = TEST_DIRECTORY + "/test_output.json";
+    private static final String TEST_OUTPUTFILE_YAML = TEST_DIRECTORY + "/test_output.yaml";
     private static final String UNSUPPORTED_FILE = TEST_DIRECTORY + "/unsupported.csv";
 
     @BeforeAll
@@ -48,26 +50,33 @@ public class FileHandlerTest {
             }
             """;
         Files.writeString(Path.of(TEST_INPUTFILE_JSON), jsonContent);
+
+        String yamlContent = """
+                mathExamples:
+                  - expression: "2 + 3"
+                  - expression: "7 - 4"
+                """;
+        Files.writeString(Path.of(TEST_INPUTFILE_YAML), yamlContent);
     }
 
     @AfterAll
     static void cleanup() throws IOException {
-        // Удаляем все тестовые файлы и директории
         Files.deleteIfExists(Paths.get(TEST_INPUTFILE_TXT));
         Files.deleteIfExists(Paths.get(TEST_INPUTFILE_XML));
         Files.deleteIfExists(Paths.get(TEST_INPUTFILE_JSON));
+        Files.deleteIfExists(Paths.get(TEST_INPUTFILE_YAML));
         Files.deleteIfExists(Paths.get(TEST_OUTPUTFILE_TXT));
         Files.deleteIfExists(Paths.get(TEST_OUTPUTFILE_XML));
         Files.deleteIfExists(Paths.get(TEST_OUTPUTFILE_JSON));
+        Files.deleteIfExists(Paths.get(TEST_OUTPUTFILE_YAML));
         Files.deleteIfExists(Paths.get(UNSUPPORTED_FILE));
         Files.deleteIfExists(Paths.get(TEST_DIRECTORY));
     }
 
     @Test
     void ReadTxtFile() throws IOException, JDOMException {
-        String expected = "2 + 3\n7 - 4";
         String actual = FileHandler.readFile(TEST_INPUTFILE_TXT, "txt");
-        assertEquals(expected, actual);
+        assertEquals("2 + 3\n7 - 4", actual);
     }
 
     @Test
@@ -79,6 +88,12 @@ public class FileHandlerTest {
     @Test
     void ReadJsonFile() throws IOException, JDOMException {
         String content = FileHandler.readFile(TEST_INPUTFILE_JSON, "json");
+        assertEquals("2 + 3\n7 - 4", content);
+    }
+
+    @Test
+    void ReadYamlFile() throws IOException, JDOMException {
+        String content = FileHandler.readFile(TEST_INPUTFILE_YAML, "yaml");
         assertEquals("2 + 3\n7 - 4", content);
     }
 
@@ -133,6 +148,17 @@ public class FileHandlerTest {
 
         assertTrue(writtenContent.contains("\"result\" : \"5\""));
         assertTrue(writtenContent.contains("\"result\" : \"3\""));
+    }
+
+    @Test
+    void testWriteYamlFile() throws IOException {
+        String data = "5\n3";
+        FileHandler.writeFile(TEST_OUTPUTFILE_YAML, data, "yaml");
+        assertTrue(Files.exists(Path.of(TEST_OUTPUTFILE_YAML)));
+        String writtenContent = Files.readString(Path.of(TEST_OUTPUTFILE_YAML));
+
+        assertTrue(writtenContent.contains("- result: '5'"));
+        assertTrue(writtenContent.contains("- result: '3'"));
     }
 
     @Test

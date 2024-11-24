@@ -9,24 +9,25 @@ import org.jdom2.output.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
 
+import org.yaml.snakeyaml.*;
+
 public class FileHandler {
 
-    // Чтение данных из файла
     public static String readFile(String fileName, String type) throws IOException, JDOMException {
-        String content = Files.readString(Paths.get(fileName));
         switch (type) {
             case "txt":
-                return content;
+                return Files.readString(Paths.get(fileName));
             case "xml":
                 return parseXML(fileName);
             case "json":
                 return parseJSON(fileName);
+            case "yaml":
+                return parseYAML(fileName);
             default:
                 throw new IllegalArgumentException("Неподдерживаемый тип файла: " + type);
         }
     }
 
-    // Запись данных в файл
     public static void writeFile(String path, String data, String type) throws IOException {
         switch (type.toLowerCase()) {
             case "txt":
@@ -37,6 +38,9 @@ public class FileHandler {
                 break;
             case "json":
                 writeJSON(path, data);
+                break;
+            case "yaml":
+                writeYAML(path, data);
                 break;
             default:
                 throw new IllegalArgumentException("Неподдерживаемый тип файла: " + type);
@@ -103,5 +107,47 @@ public class FileHandler {
 
         root.set("results", arr);
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(path), root);
+    }
+
+    private static String parseYAML(String filename) throws IOException {
+        Yaml yaml = new Yaml();
+
+        try(FileInputStream fis = new FileInputStream(filename)){
+            Map<String,Object> data = yaml.loadAs(fis, Map.class);
+            StringBuilder result = new StringBuilder();
+
+            @SuppressWarnings("unchecked")
+            List<Map<String,Object>> examples = (List<Map<String,Object>>) data.get("mathExamples");
+            for(Map<String,Object> example: examples){
+                result.append(example.get("expression")).append("\n");
+
+            }
+            return result.toString().trim();
+        }
+    }
+
+    private static void writeYAML(String path, String data){
+        DumperOptions options = new DumperOptions();
+        options.setPrettyFlow(true);
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+        Yaml yaml = new Yaml(options);
+
+        List<Map<String, String>> results = new ArrayList<>();
+        String[] lines = data.split("\n");
+        for (String line : lines) {
+            Map<String, String> result = new HashMap<>();
+            result.put("result", line);
+            results.add(result);
+        }
+
+        Map<String, Object> root = new HashMap<>();
+        root.put("results", results);
+
+        try (FileWriter writer = new FileWriter(path)) {
+            yaml.dump(root, writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
