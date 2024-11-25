@@ -11,14 +11,16 @@ public class Main {
         dir.delete();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         if (args.length < 6) {
             System.out.println("Нужный формат данных: <inputFile> <outputFile> <inputType> <outputType>");
-            System.out.println("Возможные форматы: txt");
-            System.out.println("1. Вычисления без использования регулярных выражений\n" +
-                    "2. Вычисления с использованием регулярных выражений\n" +
-                    "3. Вычисления с использованием бибилиотеки exp4j");
+            System.out.println("Возможные форматы: txt, json, xml, yaml. Архивы: zip.");
+            System.out.println("""
+                    1. Вычисления без использования регулярных выражений
+                    2. Вычисления с использованием регулярных выражений
+                    3. Вычисления с использованием бибилиотеки exp4j""");
             System.out.println("<zipOption>: true or false (archive output)");
+            System.out.println("<encryptionOption>: true or false (encryption output)");
             return;
         }
 
@@ -28,6 +30,7 @@ public class Main {
         String outputType = args[3];
         int howToCalculate = Integer.parseInt(args[4]);
         boolean shouldZip = Boolean.parseBoolean(args[5]);
+        boolean shouldEncrypt = Boolean.parseBoolean(args[6]);
 
         String outputDir = "temp"; // папка для верменных файлов
 
@@ -36,6 +39,9 @@ public class Main {
             if(inputFile.endsWith(".zip")){
                 new File(outputDir).mkdirs();
                 extractedFile = CompressionModule.decompress(inputFile, outputDir, '.'+inputType);
+            }
+            if(EncryptionModule.isEncrypted(extractedFile)){
+                EncryptionModule.decrypt(extractedFile);
             }
 
             String content = FileHandler.readFile(extractedFile, inputType);
@@ -48,9 +54,14 @@ public class Main {
             String zipFile="output.zip";
             if (shouldZip) {
                 CompressionModule.compress(outputFile, zipFile);
+                if (shouldEncrypt) {
+                    EncryptionModule.encrypt(zipFile);
+                }
                 new File(outputFile).delete();
             }
-
+            else if(shouldEncrypt){
+                EncryptionModule.encrypt(outputFile);
+            }
 
         } catch(Exception e){
             e.printStackTrace();
