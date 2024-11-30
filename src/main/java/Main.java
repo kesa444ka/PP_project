@@ -24,43 +24,52 @@ public class Main {
             return;
         }
 
-        String inputFile = args[0];
-        String outputFile = args[1];
-        String inputType = args[2];
-        String outputType = args[3];
-        int howToCalculate = Integer.parseInt(args[4]);
-        boolean shouldZip = Boolean.parseBoolean(args[5]);
-        boolean shouldEncrypt = Boolean.parseBoolean(args[6]);
+        Builder b = Builder.get()
+                .setInputFile(args[0])
+                .setOutputFile(args[1])
+                .setInputType(args[2])
+                .setOutputType(args[3])
+                .setCalculationMode(Integer.parseInt(args[4]))
+                .setShouldZip(Boolean.parseBoolean(args[5]))
+                .setShouldEncrypt(Boolean.parseBoolean(args[6]));
+
+//        String inputFile = args[0];
+//        String outputFile = args[1];
+//        String inputType = args[2];
+//        String outputType = args[3];
+//        int howToCalculate = Integer.parseInt(args[4]);
+//        boolean shouldZip = Boolean.parseBoolean(args[5]);
+//        boolean shouldEncrypt = Boolean.parseBoolean(args[6]);
 
         String outputDir = "temp"; // папка для верменных файлов
 
         try{
-            String extractedFile = inputFile;
-            if(inputFile.endsWith(".zip")){
+            String extractedFile = b.getInputFile(); //inputFile;
+            if(b.getInputFile().endsWith(".zip")){
                 new File(outputDir).mkdirs();
-                extractedFile = CompressionModule.decompress(inputFile, outputDir, '.'+inputType);
+                extractedFile = CompressionModule.decompress(b.getInputFile(), outputDir, '.'+ b.getInputFile());
             }
             if(EncryptionModule.isEncrypted(extractedFile)){
                 EncryptionModule.decrypt(extractedFile);
             }
 
-            String content = FileHandler.readFile(extractedFile, inputType);
+            String content = FileHandler.readFile(extractedFile, b.getInputType());
 
-            String result = Processor.process(content, howToCalculate);
+            String result = Processor.process(content, b.getCalculationMode());
 
-            FileHandler.writeFile(outputFile, result, outputType);
+            FileHandler.writeFile(b.getOutputFile(), result, b.getOutputType());
 
             //Архивирование и шифрование, если нужно
             String zipFile="output.zip";
-            if (shouldZip) {
-                CompressionModule.compress(outputFile, zipFile);
-                if (shouldEncrypt) {
+            if (b.getShouldZip()) {
+                CompressionModule.compress(b.getOutputFile(), zipFile);
+                if (b.getShouldEncrypt()) {
                     EncryptionModule.encrypt(zipFile);
                 }
-                new File(outputFile).delete();
+                new File(b.getOutputFile()).delete();
             }
-            else if(shouldEncrypt){
-                EncryptionModule.encrypt(outputFile);
+            else if(b.getShouldEncrypt()){
+                EncryptionModule.encrypt(b.getOutputFile());
             }
 
         } catch(Exception e){
