@@ -19,7 +19,7 @@ public class Main {
         dir.delete();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         if (args.length < 4) {
             System.out.println("Нужный формат данных: <inputFile> <outputFile> <inputType> <outputType>");
             System.out.println("Возможные форматы: txt, json, xml, yaml. Архивы: zip.");
