@@ -30,6 +30,7 @@ class CompressionModuleTest {
         // Удаляем все созданные файлы
         Files.deleteIfExists(Paths.get(TEST_INPUT_FILE));
         Files.deleteIfExists(Paths.get(COMPRESSED_FILE));
+        Path path = Paths.get(OUTPUT_DIR);
         Files.walk(Paths.get(OUTPUT_DIR)).map(Path::toFile).forEach(File::delete); //удаление всех файлов в каталоге
         Files.deleteIfExists(Paths.get(OUTPUT_DIR));
     }

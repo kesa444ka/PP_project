@@ -7,11 +7,7 @@ import javax.swing.*;
 import java.io.File;
 
 public class CalculatorUI extends JFrame {
-    private JLabel outputFileLabel;
     private JTextField outputFileField;
-    private JLabel calcModeLabel;
-    private JLabel zipLabel;
-    private JLabel encryptLabel;
     private JCheckBox zipCheckbox;
     private JCheckBox encryptCheckbox;
     private JButton processButton;
@@ -25,7 +21,6 @@ public class CalculatorUI extends JFrame {
 
     public CalculatorUI() {
         JFrame frame = new JFrame("Выбор файла");
-        JButton button = new JButton("Выбрать файл");
         FileChooser.addActionListener(actionEvent -> {
             JFileChooser fileChooser = new JFileChooser();
             int returnValue = fileChooser.showOpenDialog(frame);
