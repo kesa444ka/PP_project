@@ -1,8 +1,8 @@
+package com.mypackage.builder;
+
 public class Builder {
     private String inputFile;
     private String outputFile;
-    private String inputType;
-    private String outputType;
     private int calculationMode;
     private boolean shouldZip;
     private boolean shouldEncrypt;
@@ -28,16 +28,6 @@ public class Builder {
         return this;
     }
 
-    public Builder setInputType(String inputType) {
-        this.inputType = inputType;
-        return this;
-    }
-
-    public Builder setOutputType(String outputType) {
-        this.outputType = outputType;
-        return this;
-    }
-
     public Builder setCalculationMode(int calculationMode) {
         this.calculationMode = calculationMode;
         return this;
@@ -59,12 +49,7 @@ public class Builder {
     public String getOutputFile() {
         return outputFile;
     }
-    public String getInputType() {
-        return inputType;
-    }
-    public String getOutputType() {
-        return outputType;
-    }
+
     public int getCalculationMode() {
         return calculationMode;
     }

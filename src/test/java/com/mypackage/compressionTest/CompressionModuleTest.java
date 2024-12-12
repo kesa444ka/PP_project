@@ -1,3 +1,6 @@
+package com.mypackage.compressionTest;
+
+import com.mypackage.compression.CompressionModule;
 import org.junit.jupiter.api.*;
 import java.io.*;
 import java.nio.file.*;
@@ -10,7 +13,6 @@ class CompressionModuleTest {
     private static final String TEST_INPUT_FILE = TEMP_DIR + "input.txt";
     private static final String COMPRESSED_FILE = TEMP_DIR + "sample.zip";
     private static final String OUTPUT_DIR = TEMP_DIR + "output/";
-    private static final String REQUIRED_EXTENSION = ".txt";
 
     @BeforeEach
     void setUp() throws IOException {
@@ -43,7 +45,7 @@ class CompressionModuleTest {
     void testDecompress() throws IOException {
         // Сжимаем файл, а затем извлекаем его
         CompressionModule.compress(TEST_INPUT_FILE, COMPRESSED_FILE);
-        String extractedFilePath = CompressionModule.decompress(COMPRESSED_FILE, OUTPUT_DIR, REQUIRED_EXTENSION);
+        String extractedFilePath = CompressionModule.decompress(COMPRESSED_FILE, OUTPUT_DIR);
 
         // Проверяем, что файл был извлечен
         assertTrue(Files.exists(Paths.get(extractedFilePath)));

@@ -1,3 +1,6 @@
+package com.mypackage.filehandlerTest;
+
+import com.mypackage.filehandler.FileHandler;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
@@ -75,25 +78,25 @@ public class FileHandlerTest {
 
     @Test
     void ReadTxtFile() throws IOException, JDOMException {
-        String actual = FileHandler.readFile(TEST_INPUTFILE_TXT, "txt");
+        String actual = FileHandler.readFile(TEST_INPUTFILE_TXT);
         assertEquals("2 + 3\n7 - 4", actual);
     }
 
     @Test
     void ReadXmlFile() throws IOException, JDOMException {
-        String content = FileHandler.readFile(TEST_INPUTFILE_XML, "xml");
+        String content = FileHandler.readFile(TEST_INPUTFILE_XML);
         assertEquals("2 + 3\n7 - 4", content);
     }
 
     @Test
     void ReadJsonFile() throws IOException, JDOMException {
-        String content = FileHandler.readFile(TEST_INPUTFILE_JSON, "json");
+        String content = FileHandler.readFile(TEST_INPUTFILE_JSON);
         assertEquals("2 + 3\n7 - 4", content);
     }
 
     @Test
     void ReadYamlFile() throws IOException, JDOMException {
-        String content = FileHandler.readFile(TEST_INPUTFILE_YAML, "yaml");
+        String content = FileHandler.readFile(TEST_INPUTFILE_YAML);
         assertEquals("2 + 3\n7 - 4", content);
     }
 
@@ -102,7 +105,7 @@ public class FileHandlerTest {
         // Проверяем, что метод readFile выбрасывает IllegalArgumentException
         IllegalArgumentException e = assertThrows(
                 IllegalArgumentException.class, // Ожидаемый тип исключения
-                () -> FileHandler.readFile(UNSUPPORTED_FILE, "unsupported"), // Тестируемый код
+                () -> FileHandler.readFile(UNSUPPORTED_FILE), // Тестируемый код
                 "Ожидалось исключение IllegalArgumentException" //Тест завершится в случае неудачи и выдаст это
         );
 
@@ -119,7 +122,7 @@ public class FileHandlerTest {
         // Данные для записи
         String testData = "Hello, world!";
         // Записываем данные в файл
-        FileHandler.writeFile(TEST_OUTPUTFILE_TXT, testData, "txt");
+        FileHandler.writeFile(TEST_OUTPUTFILE_TXT, testData);
         // Проверяем, что файл существует
         assertTrue(Files.exists(Paths.get(TEST_OUTPUTFILE_TXT)), "Файл должен быть создан.");
         // Проверяем содержимое файла
@@ -130,7 +133,7 @@ public class FileHandlerTest {
     @Test
     void testWriteXmlFile() throws IOException {
         String data = "5\n3";
-        FileHandler.writeFile(TEST_OUTPUTFILE_XML, data, "xml");
+        FileHandler.writeFile(TEST_OUTPUTFILE_XML, data);
 
         assertTrue(Files.exists(Path.of(TEST_OUTPUTFILE_XML)));
 
@@ -142,7 +145,7 @@ public class FileHandlerTest {
     @Test
     void testWriteJsonFile() throws IOException {
         String data = "5\n3";
-        FileHandler.writeFile(TEST_OUTPUTFILE_JSON, data, "json");
+        FileHandler.writeFile(TEST_OUTPUTFILE_JSON, data);
         assertTrue(Files.exists(Path.of(TEST_OUTPUTFILE_JSON)));
         String writtenContent = Files.readString(Path.of(TEST_OUTPUTFILE_JSON));
 
@@ -153,7 +156,7 @@ public class FileHandlerTest {
     @Test
     void testWriteYamlFile() throws IOException {
         String data = "5\n3";
-        FileHandler.writeFile(TEST_OUTPUTFILE_YAML, data, "yaml");
+        FileHandler.writeFile(TEST_OUTPUTFILE_YAML, data);
         assertTrue(Files.exists(Path.of(TEST_OUTPUTFILE_YAML)));
         String writtenContent = Files.readString(Path.of(TEST_OUTPUTFILE_YAML));
 
@@ -165,7 +168,7 @@ public class FileHandlerTest {
     void WriteUnsupportedFileType() {
         IllegalArgumentException e = assertThrows(
                 IllegalArgumentException.class,
-                () -> FileHandler.writeFile(TEST_OUTPUTFILE_TXT, "Dummy data", "unsupported"),
+                () -> FileHandler.writeFile(TEST_OUTPUTFILE_TXT, "Dummy data"),
                 "Ожидалось исключение IllegalArgumentException для неподдерживаемого типа файла."
         );
         // Проверяем сообщение исключения

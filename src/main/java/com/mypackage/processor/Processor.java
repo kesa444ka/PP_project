@@ -1,13 +1,14 @@
+package com.mypackage.processor;
+
 import java.util.*;
 import java.util.regex.*;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
-
 public class Processor {
 
-    public static String process(String input, int choice) {
+    public static String calculate(String input, int choice) {
         StringBuilder result = new StringBuilder();
         String[] expressions = input.split("\\R");
 
@@ -17,7 +18,7 @@ public class Processor {
                 switch (choice) {
                     case 1:
                         String postfix = InfixToPostfix(expression.trim());
-                        res = calculate(postfix);
+                        res = calculateWithoutRegex(postfix);
                         result.append((res)).append("\n");
                         break;
                     case 2:
@@ -68,7 +69,7 @@ public class Processor {
         return postfix.toString().replaceAll("\\s+", " ").trim();
     }
 
-    protected static int calculate(String postfix){
+    protected static int calculateWithoutRegex(String postfix){
         Stack<Integer> digits = new Stack<>();
 
         for(int i=0; i<postfix.length(); i++){

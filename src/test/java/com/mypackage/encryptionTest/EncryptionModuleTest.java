@@ -1,3 +1,6 @@
+package com.mypackage.encryptionTest;
+
+import com.mypackage.encryption.EncryptionModule;
 import org.junit.jupiter.api.*;
 import java.io.*;
 import java.nio.file.*;

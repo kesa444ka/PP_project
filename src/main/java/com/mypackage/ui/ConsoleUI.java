@@ -1,3 +1,8 @@
+package com.mypackage.ui;
+
+import com.mypackage.builder.Builder;
+import com.mypackage.main.Main;
+
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -10,12 +15,6 @@ public class ConsoleUI {
 
             System.out.print("Введите путь к выходному файлу: ");
             String outputFile = scanner.nextLine();
-
-            System.out.print("Введите формат входного файла (txt, json, xml, yaml): ");
-            String inputType = scanner.nextLine();
-
-            System.out.print("Введите формат выходного файла (txt, json, xml, yaml): ");
-            String outputType = scanner.nextLine();
 
             System.out.println("""
                 Выберите способ расчёта:
@@ -32,12 +31,10 @@ public class ConsoleUI {
             System.out.print("Шифровать выходной файл? (true/false): ");
             boolean shouldEncrypt = Boolean.parseBoolean(scanner.nextLine());
 
-            // Создаем объект Builder с заданными параметрами
+            // Создаем объект com.mypackage.builder.Builder с заданными параметрами
             Builder b = Builder.get()
                     .setInputFile(inputFile)
                     .setOutputFile(outputFile)
-                    .setInputType(inputType)
-                    .setOutputType(outputType)
                     .setCalculationMode(calculationMode)
                     .setShouldZip(shouldZip)
                     .setShouldEncrypt(shouldEncrypt);
@@ -46,8 +43,6 @@ public class ConsoleUI {
             Main.main(new String[]{
                     b.getInputFile(),
                     b.getOutputFile(),
-                    b.getInputType(),
-                    b.getOutputType(),
                     String.valueOf(b.getCalculationMode()),
                     String.valueOf(b.getShouldZip()),
                     String.valueOf(b.getShouldEncrypt())

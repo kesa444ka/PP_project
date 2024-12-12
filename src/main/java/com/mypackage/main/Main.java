@@ -1,3 +1,11 @@
+package com.mypackage.main;
+
+import com.mypackage.builder.Builder;
+import com.mypackage.compression.CompressionModule;
+import com.mypackage.encryption.EncryptionModule;
+import com.mypackage.filehandler.FileHandler;
+import com.mypackage.processor.Processor;
+
 import java.io.*;
 
 public class Main {
@@ -11,8 +19,8 @@ public class Main {
         dir.delete();
     }
 
-    public static void main(String[] args) {
-        if (args.length < 6) {
+    public static void main(String[] args) throws IOException {
+        if (args.length < 4) {
             System.out.println("Нужный формат данных: <inputFile> <outputFile> <inputType> <outputType>");
             System.out.println("Возможные форматы: txt, json, xml, yaml. Архивы: zip.");
             System.out.println("""
@@ -27,37 +35,27 @@ public class Main {
         Builder b = Builder.get()
                 .setInputFile(args[0])
                 .setOutputFile(args[1])
-                .setInputType(args[2])
-                .setOutputType(args[3])
-                .setCalculationMode(Integer.parseInt(args[4]))
-                .setShouldZip(Boolean.parseBoolean(args[5]))
-                .setShouldEncrypt(Boolean.parseBoolean(args[6]));
-
-//        String inputFile = args[0];
-//        String outputFile = args[1];
-//        String inputType = args[2];
-//        String outputType = args[3];
-//        int howToCalculate = Integer.parseInt(args[4]);
-//        boolean shouldZip = Boolean.parseBoolean(args[5]);
-//        boolean shouldEncrypt = Boolean.parseBoolean(args[6]);
+                .setCalculationMode(Integer.parseInt(args[2]))
+                .setShouldZip(Boolean.parseBoolean(args[3]))
+                .setShouldEncrypt(Boolean.parseBoolean(args[4]));
 
         String outputDir = "temp"; // папка для верменных файлов
 
         try{
-            String extractedFile = b.getInputFile(); //inputFile;
+            String extractedFile = b.getInputFile();
             if(b.getInputFile().endsWith(".zip")){
                 new File(outputDir).mkdirs();
-                extractedFile = CompressionModule.decompress(b.getInputFile(), outputDir, '.'+ b.getInputFile());
+                extractedFile = CompressionModule.decompress(b.getInputFile(), outputDir);
             }
             if(EncryptionModule.isEncrypted(extractedFile)){
                 EncryptionModule.decrypt(extractedFile);
             }
 
-            String content = FileHandler.readFile(extractedFile, b.getInputType());
+            String content = FileHandler.readFile(extractedFile);
 
-            String result = Processor.process(content, b.getCalculationMode());
+            String result = Processor.calculate(content, b.getCalculationMode());
 
-            FileHandler.writeFile(b.getOutputFile(), result, b.getOutputType());
+            FileHandler.writeFile(b.getOutputFile(), result);
 
             //Архивирование и шифрование, если нужно
             String zipFile="output.zip";

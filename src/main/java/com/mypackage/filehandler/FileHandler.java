@@ -1,3 +1,5 @@
+package com.mypackage.filehandler;
+
 import java.nio.file.*;
 import java.util.*;
 import java.io.*;
@@ -13,8 +15,9 @@ import org.yaml.snakeyaml.*;
 
 public class FileHandler {
 
-    public static String readFile(String fileName, String type) throws IOException, JDOMException {
-        return switch (type) {
+    public static String readFile(String fileName) throws IOException, JDOMException {
+        String type = GetFileType(fileName);
+        return switch (type.toLowerCase()) {
             case "txt" -> Files.readString(Paths.get(fileName));
             case "xml" -> parseXML(fileName);
             case "json" -> parseJSON(fileName);
@@ -23,7 +26,8 @@ public class FileHandler {
         };
     }
 
-    public static void writeFile(String path, String data, String type) throws IOException {
+    public static void writeFile(String path, String data) throws IOException {
+        String type=GetFileType(path);
         switch (type.toLowerCase()) {
             case "txt":
                 Files.writeString(Paths.get(path), data);
@@ -144,5 +148,15 @@ public class FileHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String GetFileType(String filename) {
+        Path path = Paths.get(filename);
+        String fileName = path.getFileName().toString();
+        int lastIndex = fileName.lastIndexOf('.');
+        if (lastIndex > 0 && lastIndex < fileName.length() - 1) {
+            return fileName.substring(lastIndex + 1);
+        }
+        return "";
     }
 }

@@ -1,40 +1,51 @@
+package com.mypackage.ui.calculator;
+
+import com.mypackage.builder.Builder;
+import com.mypackage.main.Main;
+
 import javax.swing.*;
+import java.io.File;
 
 public class CalculatorUI extends JFrame {
-    private JLabel inputFileLabel;
     private JLabel outputFileLabel;
-    private JTextField inputFileField;
     private JTextField outputFileField;
-    private JLabel inputTypeLabel;
-    private JLabel outputTypeLabel;
-    private JTextField inputTypeField;
-    private JTextField outputTypeField;
     private JLabel calcModeLabel;
     private JLabel zipLabel;
     private JLabel encryptLabel;
-    private JTextField calcModeField;
     private JCheckBox zipCheckbox;
     private JCheckBox encryptCheckbox;
     private JButton processButton;
     private JPanel panel;
     private JLabel resultLabel;
+    private JButton FileChooser;
+    private JLabel label;
+    private JComboBox calcModeBox;
+
+    private String inputFile;
 
     public CalculatorUI() {
+        JFrame frame = new JFrame("Выбор файла");
+        JButton button = new JButton("Выбрать файл");
+        FileChooser.addActionListener(actionEvent -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int returnValue = fileChooser.showOpenDialog(frame);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                inputFile = file.getAbsolutePath();
+                label.setText("Входной файл: " + file.getName());
+            }
+        });
+
         processButton.addActionListener(actionEvent -> {
             try {
-                String inputFile = inputFileField.getText();
                 String outputFile = outputFileField.getText();
-                String inputType = inputTypeField.getText();
-                String outputType = outputTypeField.getText();
-                int calcMode = Integer.parseInt(calcModeField.getText());
+                int calcMode = calcModeBox.getSelectedIndex() + 1;
                 boolean shouldZip = zipCheckbox.isSelected();
                 boolean shouldEncrypt = encryptCheckbox.isSelected();
 
                 Builder b = Builder.get()
                         .setInputFile(inputFile)
                         .setOutputFile(outputFile)
-                        .setInputType(inputType)
-                        .setOutputType(outputType)
                         .setCalculationMode(calcMode)
                         .setShouldZip(shouldZip)
                         .setShouldEncrypt(shouldEncrypt);
@@ -42,8 +53,6 @@ public class CalculatorUI extends JFrame {
                 Main.main(new String[]{
                         b.getInputFile(),
                         b.getOutputFile(),
-                        b.getInputType(),
-                        b.getOutputType(),
                         String.valueOf(b.getCalculationMode()),
                         String.valueOf(b.getShouldZip()),
                         String.valueOf(b.getShouldEncrypt())

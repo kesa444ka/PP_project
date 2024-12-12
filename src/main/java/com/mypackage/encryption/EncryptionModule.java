@@ -1,3 +1,5 @@
+package com.mypackage.encryption;
+
 import java.io.*;
 
 public class EncryptionModule {

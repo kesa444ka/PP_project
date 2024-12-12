@@ -1,29 +1,29 @@
+package com.mypackage.compression;
+
 import java.io.*;
 import java.util.zip.*;
 
 public class CompressionModule {
 
     // Метод для извлечения файла из архива
-    public static String decompress(String archivePath, String outputDir, String requiredExtension) throws IOException {
+    public static String decompress(String archivePath, String outputDir) throws IOException {
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(archivePath))) {
             ZipEntry entry;
 
             while ((entry = zis.getNextEntry()) != null) {
                 String fileName = entry.getName();
-                if (fileName.endsWith(requiredExtension)) {
-                    File outputFile = new File(outputDir, fileName);
-                    try (OutputStream outputStream = new FileOutputStream(outputFile)) {
-                        byte[] buffer = new byte[1024];
-                        int length;
-                        while ((length = zis.read(buffer)) > 0) {
-                            outputStream.write(buffer, 0, length);
-                        }
+                File outputFile = new File(outputDir, fileName);
+                try (OutputStream outputStream = new FileOutputStream(outputFile)) {
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = zis.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, length);
                     }
-                    return outputFile.getAbsolutePath();
                 }
+                return outputFile.getAbsolutePath();
             }
         }
-        throw new FileNotFoundException("File with extension " + requiredExtension + " not found in ZIP archive.");
+        throw new FileNotFoundException("The file could not be extracted from the archive.");
     }
 
     // Метод для архивирования файла
