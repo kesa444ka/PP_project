@@ -7,6 +7,10 @@ import javax.swing.*;
 import java.io.File;
 
 public class CalculatorUI extends JFrame {
+    private JLabel outputFileLabel;
+    private JLabel calcModeLabel;
+    private JLabel zipLabel;
+    private JLabel encryptLabel;
     private JTextField outputFileField;
     private JCheckBox zipCheckbox;
     private JCheckBox encryptCheckbox;
