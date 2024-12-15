@@ -1,4 +1,4 @@
-package com.mypackage.filehandler;
+package com.mypackage.fileprocessor;
 
 import java.io.*;
 import java.util.*;

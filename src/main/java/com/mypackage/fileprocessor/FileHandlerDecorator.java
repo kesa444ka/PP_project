@@ -1,4 +1,4 @@
-package com.mypackage.filehandler;
+package com.mypackage.fileprocessor;
 
 public abstract class FileHandlerDecorator implements FileHandler {
     protected FileHandler nextHandler;

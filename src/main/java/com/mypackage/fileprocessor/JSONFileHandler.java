@@ -1,4 +1,4 @@
-package com.mypackage.filehandler;
+package com.mypackage.fileprocessor;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;

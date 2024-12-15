@@ -1,4 +1,4 @@
-package com.mypackage.filehandler;
+package com.mypackage.fileprocessor;
 
 public class FileProcessor {
     private static final FileHandler Chain = createChain();

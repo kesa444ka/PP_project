@@ -1,4 +1,4 @@
-package com.mypackage.filehandler;
+package com.mypackage.fileprocessor;
 
 public interface FileHandler {
     String read(String fileName) throws Exception;

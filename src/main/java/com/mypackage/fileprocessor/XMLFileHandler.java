@@ -1,4 +1,4 @@
-package com.mypackage.filehandler;
+package com.mypackage.fileprocessor;
 
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;

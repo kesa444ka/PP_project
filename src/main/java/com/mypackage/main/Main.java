@@ -3,7 +3,7 @@ package com.mypackage.main;
 import com.mypackage.builder.Builder;
 import com.mypackage.compression.CompressionModule;
 import com.mypackage.encryption.EncryptionModule;
-import com.mypackage.filehandler.FileProcessor;
+import com.mypackage.fileprocessor.FileProcessor;
 import com.mypackage.processor.Processor;
 
 import java.io.*;
