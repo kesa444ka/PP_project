@@ -53,7 +53,7 @@ public class Main {
 
             String content = FileProcessor.readFile(extractedFile);
 
-            String result = Processor.calculate(content, b.getCalculationMode());
+            String result = Processor.getResult(content, b.getCalculationMode());
 
             FileProcessor.writeFile(b.getOutputFile(), result);
 

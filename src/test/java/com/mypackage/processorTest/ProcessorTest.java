@@ -16,16 +16,16 @@ public class ProcessorTest {
                 10
                 10""";
 
-        String result = Processor.calculate(input, 1);
+        String result = Processor.getResult(input, 1);
 
         assertEquals(expectedOutput, result);
     }
 
     @Test
     void testCalculateWithRegex() {
-        assertEquals("4", Processor.calculate("2+2",2));
-        assertEquals("10", Processor.calculate("5*(3-1)", 2));
-        assertEquals("10", Processor.calculate("36/6+2*(5-3)", 2));
+        assertEquals("4", Processor.getResult("2+2",2));
+        assertEquals("10", Processor.getResult("5*(3-1)", 2));
+        assertEquals("10", Processor.getResult("36/6+2*(5-3)", 2));
     }
 
     @Test
@@ -39,7 +39,7 @@ public class ProcessorTest {
                 10
                 10""";
 
-        String result = Processor.calculate(input, 2);
+        String result = Processor.getResult(input, 2);
 
         assertEquals(expectedOutput, result);
     }
@@ -55,7 +55,7 @@ public class ProcessorTest {
                 10
                 10""";
 
-        String result = Processor.calculate(input, 3);
+        String result = Processor.getResult(input, 3);
 
         assertEquals(expectedOutput, result);
     }
