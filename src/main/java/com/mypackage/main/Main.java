@@ -3,7 +3,7 @@ package com.mypackage.main;
 import com.mypackage.builder.Builder;
 import com.mypackage.compression.CompressionModule;
 import com.mypackage.encryption.EncryptionModule;
-import com.mypackage.filehandler.FileHandler;
+import com.mypackage.filehandler.FileProcessor;
 import com.mypackage.processor.Processor;
 
 import java.io.*;
@@ -39,7 +39,7 @@ public class Main {
                 .setShouldZip(Boolean.parseBoolean(args[3]))
                 .setShouldEncrypt(Boolean.parseBoolean(args[4]));
 
-        String outputDir = "temp"; // папка для верменных файлов
+        String outputDir = "temp"; // папка для временных файлов
 
         try{
             String extractedFile = b.getInputFile();
@@ -51,11 +51,11 @@ public class Main {
                 EncryptionModule.decrypt(extractedFile);
             }
 
-            String content = FileHandler.readFile(extractedFile);
+            String content = FileProcessor.readFile(extractedFile);
 
             String result = Processor.calculate(content, b.getCalculationMode());
 
-            FileHandler.writeFile(b.getOutputFile(), result);
+            FileProcessor.writeFile(b.getOutputFile(), result);
 
             //Архивирование и шифрование, если нужно
             String zipFile="output.zip";
